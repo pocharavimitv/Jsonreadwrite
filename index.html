@@ -15,7 +15,7 @@
       color: #222;
     }
     .container {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 2rem auto;
       padding: 1.2rem;
       background: #fff;
@@ -23,7 +23,7 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     }
     h1 {
-      margin-top: 0;
+      margin: 0 0 0.4rem 0;
       font-size: 1.6rem;
     }
     .help {
@@ -35,20 +35,50 @@
       flex-wrap: wrap;
       gap: 0.6rem;
       margin-bottom: 1rem;
+      align-items: center;
     }
-    button, input[type="file"] {
+    button, input[type="file"], select {
       font: inherit;
     }
-    button {
+    button, select {
       border: 1px solid #c9d1e6;
       background: #f5f8ff;
       color: #1a3f8d;
       border-radius: 6px;
       padding: 0.45rem 0.75rem;
+    }
+    button {
       cursor: pointer;
     }
     button:hover {
       background: #e8efff;
+    }
+    .meta {
+      margin-bottom: 0.8rem;
+      border: 1px solid #dbe1ef;
+      border-radius: 8px;
+      padding: 0.8rem;
+      background: #fbfcff;
+    }
+    .meta h2 {
+      margin: 0 0 0.6rem 0;
+      font-size: 1.05rem;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0.6rem;
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .meta-item input {
+      border: 1px solid #d3dcf1;
+      border-radius: 6px;
+      padding: 0.4rem 0.5rem;
+      font: inherit;
     }
     table {
       width: 100%;
@@ -89,14 +119,21 @@
 <body>
   <main class="container">
     <h1>Offline JSON Table Editor</h1>
-    <p class="help">Load a JSON file with an array of objects, edit rows directly in the table, then save the updated JSON. Works fully offline in your browser.</p>
+    <p class="help">Load your JSON object (like farm data), pick a section (farms/staff/attendance/expenses), edit rows in a table, and save the full updated JSON offline.</p>
 
     <div class="toolbar">
       <input type="file" id="jsonFileInput" accept="application/json,.json" />
+      <label for="sectionSelect">Section:</label>
+      <select id="sectionSelect" aria-label="Choose JSON array section"></select>
       <button id="addRowBtn" type="button">Add Row</button>
       <button id="downloadBtn" type="button">Download JSON</button>
       <button id="loadSampleBtn" type="button">Load Sample Data</button>
     </div>
+
+    <section class="meta" id="metaSection">
+      <h2>Top-level fields</h2>
+      <div id="metaGrid" class="meta-grid"></div>
+    </section>
 
     <table id="jsonTable" aria-label="JSON data table">
       <thead></thead>

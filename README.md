@@ -2,14 +2,21 @@
 
 A lightweight offline web app to load, edit, and save JSON data in a table format.
 
-## Features
+## What is now supported
 
-- Load a local JSON file (`.json`) containing an array of objects.
-- Display data in a simple editable table.
-- Edit table cells inline.
-- Add and delete rows.
-- Download updated data as JSON.
-- Load sample data instantly.
+This app supports your JSON structure where the root is an object with:
+
+- scalar fields (example: `version`, `timestamp`)
+- array sections (example: `farms`, `staff`, `attendance`, `expenses`, `transactions`, `incomes`)
+
+You can:
+
+- load a `.json` file from local disk
+- select a section from the dropdown
+- edit rows inline in a simple table
+- add/delete rows in the selected section
+- edit top-level scalar fields
+- download the full updated JSON object
 
 ## Run locally
 
@@ -27,11 +34,15 @@ Then open `http://localhost:8000`.
 
 ## JSON format expected
 
-The app expects a JSON array of objects, for example:
+The app expects a top-level object containing at least one array section, for example:
 
 ```json
-[
-  { "id": 1, "name": "Alice", "role": "Engineer" },
-  { "id": 2, "name": "Bob", "role": "Designer" }
-]
+{
+  "version": 1,
+  "timestamp": 1770704201516,
+  "farms": [{ "id": 3, "name": "Mayuri Natural Farm" }],
+  "staff": [{ "id": 6, "name": "Ramesh" }],
+  "attendance": [],
+  "expenses": []
+}
 ```
