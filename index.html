@@ -5,44 +5,254 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Offline JSON Table Editor</title>
   <style>
-    :root { font-family: Arial, Helvetica, sans-serif; }
-    body { margin: 0; background: #f8f9fb; color: #1f2937; }
-    .container { max-width: 1240px; margin: 1rem auto; padding: 1rem; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; }
-    h1 { margin: 0 0 .4rem; font-size: 2rem; }
-    .help { margin: 0 0 .9rem; color: #4b5563; font-size: 1.95rem; }
-    .row { display: flex; gap: .75rem; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: .8rem; }
-    button, input, textarea { font: inherit; }
-    button, input[type="file"] { border: 1px solid #cbd5e1; background: #fff; border-radius: 7px; padding: .42rem .75rem; }
-    button { cursor: pointer; }
-    button:hover { background: #f1f5f9; }
+    :root {
+      font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --bg: #f3f6ff;
+      --panel: #ffffff;
+      --text: #14213d;
+      --muted: #5a6a85;
+      --primary: #3b5bdb;
+      --primary-soft: #e8edff;
+      --border: #d7def1;
+      --success: #0f7b49;
+      --danger: #bf1f44;
+    }
 
-    .label { font-size: 1.4rem; margin-bottom: .35rem; }
-    .sections { margin-bottom: .75rem; }
-    .section-buttons { display: flex; flex-wrap: wrap; gap: .5rem; }
-    .section-btn { min-width: 130px; }
-    .section-btn.active { background: #e2e8f0; border-color: #94a3b8; font-weight: 700; }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top left, #eef3ff 0%, var(--bg) 55%);
+      color: var(--text);
+    }
 
-    .functions { margin-bottom: .75rem; }
-    .function-buttons { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: space-between; }
-    .function-group { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .container {
+      max-width: 1240px;
+      margin: 1rem auto;
+      padding: 1rem;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 10px 28px rgba(58, 86, 180, 0.08);
+    }
 
-    .meta, .excel-panel { border: 1px solid #e2e8f0; border-radius: 8px; padding: .75rem; margin-bottom: .8rem; }
-    .meta h2, .excel-panel h2 { font-size: 1rem; margin: 0 0 .55rem; }
-    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .55rem; }
-    .meta-item { display: flex; flex-direction: column; gap: .2rem; }
-    .meta-item input { border: 1px solid #cbd5e1; border-radius: 6px; padding: .4rem; }
-    .excel-panel p { margin: 0 0 .45rem; color: #475569; }
-    #excelPasteArea { width: 100%; min-height: 86px; border: 1px solid #cbd5e1; border-radius: 6px; padding: .45rem; box-sizing: border-box; }
+    h1 {
+      margin: 0 0 0.3rem;
+      font-size: 1.9rem;
+      color: #1a2c63;
+      letter-spacing: 0.2px;
+    }
 
-    .table-wrap { width: 100%; overflow-x: auto; overflow-y: hidden; border: 1px solid #e2e8f0; border-radius: 8px; }
-    table { width: max-content; min-width: 100%; border-collapse: collapse; table-layout: fixed; }
-    th, td { border: 1px solid #dbe1ef; padding: .45rem; text-align: left; vertical-align: top; max-width: 230px; word-break: break-word; }
-    th { background: #f1f5f9; position: sticky; top: 0; z-index: 1; }
-    td[contenteditable="true"] { background: #fff; min-width: 120px; }
-    .row-actions { width: 95px; min-width: 95px; text-align: center; }
+    .help {
+      margin: 0 0 1rem;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.45;
+    }
 
-    .status { margin-top: .7rem; min-height: 1.1rem; color: #166534; }
-    .status.error { color: #b91c1c; }
+    .row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 0.9rem;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button,
+    input[type="file"] {
+      border: 1px solid #bcc8ea;
+      background: #fff;
+      border-radius: 8px;
+      padding: 0.46rem 0.8rem;
+    }
+
+    button {
+      cursor: pointer;
+      color: #1d2b58;
+      transition: all 0.15s ease;
+    }
+
+    button:hover {
+      background: var(--primary-soft);
+      border-color: #9fb1ea;
+    }
+
+    #loadSampleBtn,
+    #downloadBtn {
+      background: linear-gradient(180deg, #5b7af0, #4567e6);
+      color: #fff;
+      border-color: #3c5fdf;
+    }
+
+    #loadSampleBtn:hover,
+    #downloadBtn:hover {
+      background: linear-gradient(180deg, #4f70ed, #3658dc);
+    }
+
+    .label {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: #1f356e;
+    }
+
+    .sections,
+    .functions {
+      margin-bottom: 0.85rem;
+    }
+
+    .section-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .section-btn {
+      min-width: 130px;
+      background: #fff;
+    }
+
+    .section-btn.active {
+      background: linear-gradient(180deg, #e8edff, #dce4ff);
+      border-color: #8fa4e8;
+      color: #21387a;
+      font-weight: 700;
+      box-shadow: inset 0 0 0 1px #b9c8f4;
+    }
+
+    .function-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: space-between;
+    }
+
+    .function-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .meta,
+    .excel-panel {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.8rem;
+      margin-bottom: 0.85rem;
+      background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+    }
+
+    .meta h2,
+    .excel-panel h2 {
+      font-size: 1rem;
+      margin: 0 0 0.55rem;
+      color: #243b78;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.55rem;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .meta-item input {
+      border: 1px solid #c4d0ef;
+      border-radius: 6px;
+      padding: 0.4rem;
+      background: #fff;
+    }
+
+    .excel-panel p {
+      margin: 0 0 0.45rem;
+      color: #546584;
+    }
+
+    #excelPasteArea {
+      width: 100%;
+      min-height: 86px;
+      border: 1px solid #c4d0ef;
+      border-radius: 6px;
+      padding: 0.45rem;
+      box-sizing: border-box;
+      background: #fff;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    table {
+      width: max-content;
+      min-width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    th,
+    td {
+      border: 1px solid #dbe1ef;
+      padding: 0.48rem;
+      text-align: left;
+      vertical-align: top;
+      max-width: 230px;
+      word-break: break-word;
+    }
+
+    th {
+      background: linear-gradient(180deg, #eff3ff, #e5ecff);
+      color: #1f356e;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    tbody tr:nth-child(even) td {
+      background: #fbfcff;
+    }
+
+    td[contenteditable="true"] {
+      background: #fff;
+      min-width: 120px;
+    }
+
+    td[contenteditable="true"]:focus {
+      outline: 2px solid #a9bcf5;
+      outline-offset: -2px;
+      background: #f7faff;
+    }
+
+    .row-actions {
+      width: 95px;
+      min-width: 95px;
+      text-align: center;
+    }
+
+    .status {
+      margin-top: 0.8rem;
+      min-height: 1.1rem;
+      font-weight: 500;
+      color: var(--success);
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
   </style>
 </head>
 <body>
