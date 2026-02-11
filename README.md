@@ -4,45 +4,40 @@ A lightweight offline web app to load, edit, and save JSON data in a table forma
 
 ## What is now supported
 
-This app supports your JSON structure where the root is an object with:
+This app supports object-root JSON with sections such as:
 
-- scalar fields (example: `version`, `timestamp`)
-- array sections (example: `farms`, `staff`, `attendance`, `expenses`, `transactions`, `incomes`)
+- `farms`
+- `staff`
+- `attendance`
+- `expenses`
+- `transactions`
+- `incomes`
 
-You can:
+## Excel-friendly editing
 
-- load a `.json` file from local disk
-- select a section from the dropdown
-- edit rows inline in a simple table
-- add/delete rows in the selected section
-- edit top-level scalar fields
-- download the full updated JSON object
+You can now copy/paste data with Excel in two simple ways:
+
+1. **Direct multi-cell paste into the table**
+   - Copy a range in Excel
+   - Click a table cell in the app
+   - Paste (`Ctrl+V`)
+   - The app fills matching rows/columns automatically
+
+2. **Excel Paste Area**
+   - Paste tab-separated rows into the text area
+   - Click **Apply Pasted Excel Data** to replace the current section rows
+
+You can also click **Copy Section as Excel** to copy section data as tab-separated text (with headers).
 
 ## Run locally
 
 No build step is required.
 
-Option 1: open `index.html` directly in your browser.
-
-Option 2 (recommended): serve the folder with a static server:
+- Open `index.html` directly in your browser, or
+- Run a static server:
 
 ```bash
 python3 -m http.server 8000
 ```
 
 Then open `http://localhost:8000`.
-
-## JSON format expected
-
-The app expects a top-level object containing at least one array section, for example:
-
-```json
-{
-  "version": 1,
-  "timestamp": 1770704201516,
-  "farms": [{ "id": 3, "name": "Mayuri Natural Farm" }],
-  "staff": [{ "id": 6, "name": "Ramesh" }],
-  "attendance": [],
-  "expenses": []
-}
-```

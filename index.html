@@ -5,127 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Offline JSON Table Editor</title>
   <style>
-    :root {
-      color-scheme: light;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-    body {
-      margin: 0;
-      background: #f6f7fb;
-      color: #222;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 1.2rem;
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    }
-    h1 {
-      margin: 0 0 0.4rem 0;
-      font-size: 1.6rem;
-    }
-    .help {
-      color: #555;
-      margin-bottom: 1rem;
-    }
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-      margin-bottom: 1rem;
-      align-items: center;
-    }
-    button, input[type="file"], select {
-      font: inherit;
-    }
-    button, select {
-      border: 1px solid #c9d1e6;
-      background: #f5f8ff;
-      color: #1a3f8d;
-      border-radius: 6px;
-      padding: 0.45rem 0.75rem;
-    }
-    button {
-      cursor: pointer;
-    }
-    button:hover {
-      background: #e8efff;
-    }
-    .meta {
-      margin-bottom: 0.8rem;
-      border: 1px solid #dbe1ef;
-      border-radius: 8px;
-      padding: 0.8rem;
-      background: #fbfcff;
-    }
-    .meta h2 {
-      margin: 0 0 0.6rem 0;
-      font-size: 1.05rem;
-    }
-    .meta-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 0.6rem;
-    }
-    .meta-item {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-    .meta-item input {
-      border: 1px solid #d3dcf1;
-      border-radius: 6px;
-      padding: 0.4rem 0.5rem;
-      font: inherit;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 0.5rem;
-    }
-    th, td {
-      border: 1px solid #dbe1ef;
-      padding: 0.5rem;
-      text-align: left;
-      vertical-align: top;
-    }
-    th {
-      background: #eef3ff;
-    }
-    td[contenteditable="true"] {
-      background: #fcfdff;
-      min-width: 120px;
-    }
-    tr:nth-child(even) td {
-      background: #fafcff;
-    }
-    .row-actions {
-      width: 80px;
-      text-align: center;
-    }
-    .status {
-      margin-top: 0.75rem;
-      font-size: 0.95rem;
-      color: #2e5a1f;
-      min-height: 1.1rem;
-    }
-    .status.error {
-      color: #9e1c1c;
-    }
+    :root { font-family: Arial, Helvetica, sans-serif; }
+    body { margin: 0; background: #f8f9fb; color: #1f2937; }
+    .container { max-width: 1200px; margin: 1.2rem auto; padding: 1rem; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; }
+    h1 { margin: 0 0 .4rem; font-size: 1.35rem; }
+    .help { margin: 0 0 .9rem; color: #4b5563; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: .45rem; margin-bottom: .8rem; align-items: center; }
+    button, select, input, textarea { font: inherit; }
+    button, select, input[type="file"] { border: 1px solid #cbd5e1; background: #fff; border-radius: 6px; padding: .42rem .65rem; }
+    button { cursor: pointer; }
+    button:hover { background: #f1f5f9; }
+    .meta, .excel-panel { border: 1px solid #e2e8f0; border-radius: 8px; padding: .75rem; margin-bottom: .8rem; }
+    .meta h2, .excel-panel h2 { font-size: 1rem; margin: 0 0 .55rem; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .55rem; }
+    .meta-item { display: flex; flex-direction: column; gap: .2rem; }
+    .meta-item input { border: 1px solid #cbd5e1; border-radius: 6px; padding: .4rem; }
+    .excel-panel p { margin: 0 0 .45rem; color: #475569; }
+    #excelPasteArea { width: 100%; min-height: 86px; border: 1px solid #cbd5e1; border-radius: 6px; padding: .45rem; box-sizing: border-box; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #dbe1ef; padding: .45rem; text-align: left; }
+    th { background: #f1f5f9; position: sticky; top: 0; }
+    td[contenteditable="true"] { background: #fff; min-width: 110px; }
+    .row-actions { width: 82px; text-align: center; }
+    .status { margin-top: .7rem; min-height: 1.1rem; color: #166534; }
+    .status.error { color: #b91c1c; }
   </style>
 </head>
 <body>
   <main class="container">
     <h1>Offline JSON Table Editor</h1>
-    <p class="help">Load your JSON object (like farm data), pick a section (farms/staff/attendance/expenses), edit rows in a table, and save the full updated JSON offline.</p>
+    <p class="help">Simple table editor for JSON sections with Excel-friendly copy/paste. Paste tabular data from Excel directly into a cell.</p>
 
     <div class="toolbar">
       <input type="file" id="jsonFileInput" accept="application/json,.json" />
       <label for="sectionSelect">Section:</label>
       <select id="sectionSelect" aria-label="Choose JSON array section"></select>
       <button id="addRowBtn" type="button">Add Row</button>
+      <button id="copyTsvBtn" type="button">Copy Section as Excel</button>
+      <button id="applyTsvBtn" type="button">Apply Pasted Excel Data</button>
       <button id="downloadBtn" type="button">Download JSON</button>
       <button id="loadSampleBtn" type="button">Load Sample Data</button>
     </div>
@@ -135,6 +52,12 @@
       <div id="metaGrid" class="meta-grid"></div>
     </section>
 
+    <section class="excel-panel">
+      <h2>Excel Paste Area (optional)</h2>
+      <p>Paste rows copied from Excel here (tab-separated), then click <strong>Apply Pasted Excel Data</strong>.</p>
+      <textarea id="excelPasteArea" placeholder="id\tname\n1\tAlice"></textarea>
+    </section>
+
     <table id="jsonTable" aria-label="JSON data table">
       <thead></thead>
       <tbody></tbody>
@@ -142,7 +65,6 @@
 
     <div id="status" class="status" role="status" aria-live="polite"></div>
   </main>
-
   <script src="app.js"></script>
 </body>
 </html>
