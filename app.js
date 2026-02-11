@@ -1,5 +1,5 @@
 const jsonFileInput = document.getElementById('jsonFileInput');
-const sectionSelect = document.getElementById('sectionSelect');
+const sectionButtons = document.getElementById('sectionButtons');
 const addRowBtn = document.getElementById('addRowBtn');
 const copyTsvBtn = document.getElementById('copyTsvBtn');
 const applyTsvBtn = document.getElementById('applyTsvBtn');
@@ -16,11 +16,6 @@ let sectionNames = [];
 let selectedSection = '';
 
 jsonFileInput.addEventListener('change', handleFileUpload);
-sectionSelect.addEventListener('change', () => {
-  selectedSection = sectionSelect.value;
-  renderTable();
-  setStatus(`Switched to section: ${selectedSection}`);
-});
 addRowBtn.addEventListener('click', addRow);
 copyTsvBtn.addEventListener('click', copySectionAsTsv);
 applyTsvBtn.addEventListener('click', applyExcelPasteArea);
@@ -71,7 +66,7 @@ function initializeFromRootData() {
   sectionNames = Object.keys(rootData).filter((key) => Array.isArray(rootData[key]));
   selectedSection = sectionNames[0] || '';
   renderMetaFields();
-  renderSectionSelect();
+  renderSectionButtons();
   renderTable();
 }
 
@@ -99,21 +94,28 @@ function renderMetaFields() {
   });
 }
 
-function renderSectionSelect() {
-  sectionSelect.innerHTML = '';
+function renderSectionButtons() {
+  sectionButtons.innerHTML = '';
   if (sectionNames.length === 0) {
-    const opt = document.createElement('option');
-    opt.value = '';
-    opt.textContent = 'No array sections';
-    sectionSelect.appendChild(opt);
+    const msg = document.createElement('span');
+    msg.textContent = 'No array sections';
+    sectionButtons.appendChild(msg);
     return;
   }
+
   sectionNames.forEach((name) => {
-    const opt = document.createElement('option');
-    opt.value = name;
-    opt.textContent = `${name} (${rootData[name].length})`;
-    if (name === selectedSection) opt.selected = true;
-    sectionSelect.appendChild(opt);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'section-btn';
+    if (name === selectedSection) btn.classList.add('active');
+    btn.textContent = `${name} (${rootData[name].length})`;
+    btn.addEventListener('click', () => {
+      selectedSection = name;
+      renderSectionButtons();
+      renderTable();
+      setStatus(`Switched to section: ${selectedSection}`);
+    });
+    sectionButtons.appendChild(btn);
   });
 }
 
@@ -175,7 +177,7 @@ function renderTable() {
     del.textContent = 'Delete';
     del.addEventListener('click', () => {
       rows.splice(rowIndex, 1);
-      renderSectionSelect();
+      renderSectionButtons();
       renderTable();
       setStatus(`Deleted row from ${selectedSection}.`);
     });
@@ -204,7 +206,7 @@ function handleGridPaste(event, startRow, startCol, headers) {
     });
   });
 
-  renderSectionSelect();
+  renderSectionButtons();
   renderTable();
   setStatus('Pasted Excel data into table.');
 }
@@ -218,7 +220,7 @@ function addRow() {
   const headers = deriveHeaders(rows);
   const row = headers.length === 0 ? { id: '', name: '' } : Object.fromEntries(headers.map((h) => [h, '']));
   rows.push(row);
-  renderSectionSelect();
+  renderSectionButtons();
   renderTable();
   setStatus(`Added row to ${selectedSection}.`);
 }
@@ -278,7 +280,7 @@ function applyExcelPasteArea() {
     return row;
   });
 
-  renderSectionSelect();
+  renderSectionButtons();
   renderTable();
   setStatus(`Applied ${rootData[selectedSection].length} row(s) to ${selectedSection}.`);
 }

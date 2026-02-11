@@ -7,14 +7,25 @@
   <style>
     :root { font-family: Arial, Helvetica, sans-serif; }
     body { margin: 0; background: #f8f9fb; color: #1f2937; }
-    .container { max-width: 1200px; margin: 1.2rem auto; padding: 1rem; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; }
-    h1 { margin: 0 0 .4rem; font-size: 1.35rem; }
-    .help { margin: 0 0 .9rem; color: #4b5563; }
-    .toolbar { display: flex; flex-wrap: wrap; gap: .45rem; margin-bottom: .8rem; align-items: center; }
-    button, select, input, textarea { font: inherit; }
-    button, select, input[type="file"] { border: 1px solid #cbd5e1; background: #fff; border-radius: 6px; padding: .42rem .65rem; }
+    .container { max-width: 1240px; margin: 1rem auto; padding: 1rem; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; }
+    h1 { margin: 0 0 .4rem; font-size: 2rem; }
+    .help { margin: 0 0 .9rem; color: #4b5563; font-size: 1.95rem; }
+    .row { display: flex; gap: .75rem; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: .8rem; }
+    button, input, textarea { font: inherit; }
+    button, input[type="file"] { border: 1px solid #cbd5e1; background: #fff; border-radius: 7px; padding: .42rem .75rem; }
     button { cursor: pointer; }
     button:hover { background: #f1f5f9; }
+
+    .label { font-size: 1.4rem; margin-bottom: .35rem; }
+    .sections { margin-bottom: .75rem; }
+    .section-buttons { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .section-btn { min-width: 130px; }
+    .section-btn.active { background: #e2e8f0; border-color: #94a3b8; font-weight: 700; }
+
+    .functions { margin-bottom: .75rem; }
+    .function-buttons { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: space-between; }
+    .function-group { display: flex; gap: .5rem; flex-wrap: wrap; }
+
     .meta, .excel-panel { border: 1px solid #e2e8f0; border-radius: 8px; padding: .75rem; margin-bottom: .8rem; }
     .meta h2, .excel-panel h2 { font-size: 1rem; margin: 0 0 .55rem; }
     .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .55rem; }
@@ -22,11 +33,14 @@
     .meta-item input { border: 1px solid #cbd5e1; border-radius: 6px; padding: .4rem; }
     .excel-panel p { margin: 0 0 .45rem; color: #475569; }
     #excelPasteArea { width: 100%; min-height: 86px; border: 1px solid #cbd5e1; border-radius: 6px; padding: .45rem; box-sizing: border-box; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { border: 1px solid #dbe1ef; padding: .45rem; text-align: left; }
-    th { background: #f1f5f9; position: sticky; top: 0; }
-    td[contenteditable="true"] { background: #fff; min-width: 110px; }
-    .row-actions { width: 82px; text-align: center; }
+
+    .table-wrap { width: 100%; overflow-x: auto; overflow-y: hidden; border: 1px solid #e2e8f0; border-radius: 8px; }
+    table { width: max-content; min-width: 100%; border-collapse: collapse; table-layout: fixed; }
+    th, td { border: 1px solid #dbe1ef; padding: .45rem; text-align: left; vertical-align: top; max-width: 230px; word-break: break-word; }
+    th { background: #f1f5f9; position: sticky; top: 0; z-index: 1; }
+    td[contenteditable="true"] { background: #fff; min-width: 120px; }
+    .row-actions { width: 95px; min-width: 95px; text-align: center; }
+
     .status { margin-top: .7rem; min-height: 1.1rem; color: #166534; }
     .status.error { color: #b91c1c; }
   </style>
@@ -36,16 +50,31 @@
     <h1>Offline JSON Table Editor</h1>
     <p class="help">Simple table editor for JSON sections with Excel-friendly copy/paste. Paste tabular data from Excel directly into a cell.</p>
 
-    <div class="toolbar">
+    <div class="row">
       <input type="file" id="jsonFileInput" accept="application/json,.json" />
-      <label for="sectionSelect">Section:</label>
-      <select id="sectionSelect" aria-label="Choose JSON array section"></select>
-      <button id="addRowBtn" type="button">Add Row</button>
-      <button id="copyTsvBtn" type="button">Copy Section as Excel</button>
-      <button id="applyTsvBtn" type="button">Apply Pasted Excel Data</button>
-      <button id="downloadBtn" type="button">Download JSON</button>
       <button id="loadSampleBtn" type="button">Load Sample Data</button>
     </div>
+
+    <section class="sections">
+      <div class="label">Section:</div>
+      <div id="sectionButtons" class="section-buttons" aria-label="Choose JSON array section"></div>
+    </section>
+
+    <section class="functions">
+      <div class="label">Functions:</div>
+      <div class="function-buttons">
+        <div class="function-group">
+          <button id="addRowBtn" type="button">Add Row</button>
+        </div>
+        <div class="function-group">
+          <button id="copyTsvBtn" type="button">Copy Section as Excel</button>
+          <button id="applyTsvBtn" type="button">Apply Pasted Excel Data</button>
+        </div>
+        <div class="function-group">
+          <button id="downloadBtn" type="button">Download JSON</button>
+        </div>
+      </div>
+    </section>
 
     <section class="meta" id="metaSection">
       <h2>Top-level fields</h2>
@@ -58,10 +87,12 @@
       <textarea id="excelPasteArea" placeholder="id\tname\n1\tAlice"></textarea>
     </section>
 
-    <table id="jsonTable" aria-label="JSON data table">
-      <thead></thead>
-      <tbody></tbody>
-    </table>
+    <div class="table-wrap">
+      <table id="jsonTable" aria-label="JSON data table">
+        <thead></thead>
+        <tbody></tbody>
+      </table>
+    </div>
 
     <div id="status" class="status" role="status" aria-live="polite"></div>
   </main>

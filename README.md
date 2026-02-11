@@ -13,9 +13,15 @@ This app supports object-root JSON with sections such as:
 - `transactions`
 - `incomes`
 
+## Updated layout
+
+- **Section** is now shown as clickable buttons (instead of a dropdown).
+- Other actions are grouped under **Functions**.
+- Long/wide tables are contained in a horizontal scroll area so they do not overflow the page.
+
 ## Excel-friendly editing
 
-You can now copy/paste data with Excel in two simple ways:
+You can copy/paste data with Excel in two ways:
 
 1. **Direct multi-cell paste into the table**
    - Copy a range in Excel
@@ -27,7 +33,7 @@ You can now copy/paste data with Excel in two simple ways:
    - Paste tab-separated rows into the text area
    - Click **Apply Pasted Excel Data** to replace the current section rows
 
-You can also click **Copy Section as Excel** to copy section data as tab-separated text (with headers).
+You can click **Copy Section as Excel** to copy section data as tab-separated text (with headers).
 
 ## Run locally
 
