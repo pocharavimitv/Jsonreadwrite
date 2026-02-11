@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Offline JSON ↔ Excel Converter</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Offline JSON ↔ Excel Converter</h1>
+      <p>
+        Import a JSON file to download an Excel workbook, then upload an updated Excel file to
+        convert it back to JSON. Everything runs locally in your browser.
+      </p>
+
+      <section class="card">
+        <h2>1) JSON to Excel</h2>
+        <label for="jsonInput" class="file-label">Choose JSON file</label>
+        <input id="jsonInput" type="file" accept="application/json,.json" />
+        <button id="jsonToExcelBtn" disabled>Convert to Excel XML (.xml)</button>
+      </section>
+
+      <section class="card">
+        <h2>2) Excel to JSON</h2>
+        <label for="excelInput" class="file-label">Choose Excel XML file</label>
+        <input id="excelInput" type="file" accept=".xml,.xls" />
+        <button id="excelToJsonBtn" disabled>Convert to JSON (.json)</button>
+      </section>
+
+      <section class="card">
+        <h2>Log</h2>
+        <pre id="log" aria-live="polite">Ready.</pre>
+      </section>
+    </main>
+
+    <script src="converter.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
